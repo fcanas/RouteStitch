@@ -12,6 +12,7 @@
 		E76E8E8E1A113973008462EE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E76E8E8D1A113973008462EE /* Images.xcassets */; };
 		E76E8E911A113973008462EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E76E8E8F1A113973008462EE /* Main.storyboard */; };
 		E76E8E9D1A113973008462EE /* RouteStitchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76E8E9C1A113973008462EE /* RouteStitchTests.swift */; };
+		E76E8EA71A113D56008462EE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76E8EA61A113D56008462EE /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,8 @@
 		E76E8E961A113973008462EE /* RouteStitchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RouteStitchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76E8E9B1A113973008462EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76E8E9C1A113973008462EE /* RouteStitchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteStitchTests.swift; sourceTree = "<group>"; };
+		E76E8EA61A113D56008462EE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		E76E8EA81A113D56008462EE /* RouteStitch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = RouteStitch.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E76E8EA71A113D56008462EE /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +61,7 @@
 		E76E8E7B1A113972008462EE = {
 			isa = PBXGroup;
 			children = (
+				E76E8EA61A113D56008462EE /* MapKit.framework */,
 				E76E8E861A113972008462EE /* RouteStitch */,
 				E76E8E991A113973008462EE /* RouteStitchTests */,
 				E76E8E851A113972008462EE /* Products */,
@@ -75,6 +80,7 @@
 		E76E8E861A113972008462EE /* RouteStitch */ = {
 			isa = PBXGroup;
 			children = (
+				E76E8EA81A113D56008462EE /* RouteStitch.entitlements */,
 				E76E8E891A113973008462EE /* AppDelegate.swift */,
 				E76E8E8B1A113973008462EE /* ViewController.swift */,
 				E76E8E8D1A113973008462EE /* Images.xcassets */,
@@ -158,6 +164,12 @@
 				TargetAttributes = {
 					E76E8E831A113972008462EE = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = AXL96AEQK3;
+						SystemCapabilities = {
+							com.apple.Maps.Mac = {
+								enabled = 1;
+							};
+						};
 					};
 					E76E8E951A113973008462EE = {
 						CreatedOnToolsVersion = 6.1;
@@ -324,10 +336,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RouteStitch/RouteStitch.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = RouteStitch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -335,10 +351,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RouteStitch/RouteStitch.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = RouteStitch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
