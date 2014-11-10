@@ -21,6 +21,15 @@ class TouchPoint: NSObject, MKAnnotation {
     }
 }
 
+class Step: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    var title: String
+    init (step: MKRouteStep){
+        self.coordinate = step.polyline.coordinate
+        self.title = step.instructions
+    }
+}
+
 class Route: NSObject {
     var polyline: MKPolyline
     var steps: [MKRouteStep]
@@ -53,7 +62,13 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         didSet {
             if all(routes) {
                 self.route = routeFromRoutes(routes as [MKRoute?])
-                self.mapView.addOverlay(self.route?.polyline)
+                self.mapView.addOverlay(self.route!.polyline)
+                for step in self.route!.steps {
+                    self.mapView.addOverlay(step.polyline)
+                }
+                mapView.addAnnotations(self.route!.steps.map({ (step: MKRouteStep) -> Step in
+                    return Step(step: step)
+                }) as [Step])
             }
         }
     }
@@ -138,9 +153,20 @@ class ViewController: NSViewController, MKMapViewDelegate  {
     }
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        let polyline = overlay as MKPolyline
+        
         let render = MKPolylineRenderer(polyline: overlay as MKPolyline?)
-        render.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.5)
-        render.lineWidth = 5
+        
+        if polyline == self.route!.polyline {
+            render.lineWidth = 12
+            render.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.2)
+        } else {
+            render.lineWidth = 5
+            render.strokeColor = NSColor.orangeColor().colorWithAlphaComponent(0.6)
+        }
+        
+        
+        
         return render
     }
     
@@ -154,5 +180,23 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         }
     }
     
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        var v = mapView.viewForAnnotation(annotation)
+        if v != nil {
+            return v
+        }
+        
+        if let step = annotation as? Step {
+            let pin = MKPinAnnotationView(annotation: step, reuseIdentifier: "step")
+            pin.pinColor = MKPinAnnotationColor.Green
+            v = pin
+        } else {
+            let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "wayPoint")
+            pin.pinColor = MKPinAnnotationColor.Red
+            v = pin
+        }
+        
+        return v
+    }
 }
 
