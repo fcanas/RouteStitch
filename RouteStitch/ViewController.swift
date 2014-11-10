@@ -21,27 +21,82 @@ class TouchPoint: NSObject, MKAnnotation {
     }
 }
 
-class ViewController: NSViewController, MKMapViewDelegate  {
+class Route: NSObject {
+    var polyline: MKPolyline
+    var steps: [MKRouteStep]
+    var distance: CLLocationDistance
+    init(polyline: MKPolyline, steps: [MKRouteStep], distance: CLLocationDistance) {
+        self.polyline = polyline
+        self.steps = steps
+        self.distance = distance
+    }
+}
 
+func all<T>(array: [T?]) -> Bool {
+    for element in array {
+        if element==nil {
+            return false
+        }
+    }
+    return true
+}
+
+class ViewController: NSViewController, MKMapViewDelegate  {
+    
     @IBOutlet weak var mapView: MKMapView!
     
-    var touchPoints :[TouchPoint] = Array()
+    var touchPoints: [TouchPoint] = Array()
+    
+    var route: Route?
+    
+    var routes: [MKRoute?] = [nil, nil, nil] {
+        didSet {
+            if all(routes) {
+                self.route = routeFromRoutes(routes as [MKRoute?])
+                self.mapView.addOverlay(self.route?.polyline)
+            }
+        }
+    }
+    
+    func routeFromRoutes(routes: [MKRoute?]) -> Route {
+        
+        var newPoints: [MKMapPoint] = []
+        var steps: [MKRouteStep] = Array()
+        var distance: CLLocationDistance = 0
+        for route in (routes as [MKRoute!]) {
+            // Coordinates
+            let points = route.polyline.points()
+            for i in 0..<route.polyline.pointCount {
+                newPoints.append(points[i])
+            }
+            
+            // Steps
+            steps = steps + (route.steps as [MKRouteStep])
+            
+            // Distance
+            distance += route.distance
+        }
+        
+        let polyline = MKPolyline(points: &newPoints, count: newPoints.count)
+        
+        return Route(polyline: polyline, steps: steps, distance: distance)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let providenceCoord = CLLocationCoordinate2DMake(41.82526, -71.41117)
         let smallSpan = MKCoordinateSpanMake(0.003, 0.003)
         let providenceRegion = MKCoordinateRegionMake(providenceCoord, smallSpan)
         mapView.region = providenceRegion
     }
-
+    
     override var representedObject: AnyObject? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
     }
-
+    
     @IBAction func didPressOnMap(sender: NSPressGestureRecognizer) {
         if sender.state != NSGestureRecognizerState.Began {
             return
@@ -62,11 +117,15 @@ class ViewController: NSViewController, MKMapViewDelegate  {
     }
     
     func buildRouteOnMap() {
-        routeFromCoordinate(touchPoints[0].coordinate, destinationCoordinate: touchPoints[1].coordinate)
-        routeFromCoordinate(touchPoints[1].coordinate, destinationCoordinate: touchPoints[2].coordinate)
+        for index in 0...(routes.count - 1) {
+            routeFromCoordinate(touchPoints[index].coordinate,
+                destinationCoordinate: touchPoints[(index+1) % routes.count].coordinate, completion:{ (route: MKRoute) -> Void in
+                    self.routes.replaceRange(index...index, with: [route] as [MKRoute?])
+            })
+        }
     }
     
-    func routeFromCoordinate(source: CLLocationCoordinate2D, destinationCoordinate: CLLocationCoordinate2D) {
+    func routeFromCoordinate(source: CLLocationCoordinate2D, destinationCoordinate: CLLocationCoordinate2D, completion: (MKRoute)->Void ) {
         let request = MKDirectionsRequest()
         request.transportType = MKDirectionsTransportType.Walking
         request.setSource(mapItemWithCoordinate(source))
@@ -74,7 +133,7 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         
         MKDirections(request: request).calculateDirectionsWithCompletionHandler { (response: MKDirectionsResponse!, error: NSError!) -> Void in
             let route = response.routes.first as MKRoute!
-            self.mapView.addOverlay(route.polyline)
+            completion(route)
         }
     }
     
@@ -94,6 +153,6 @@ class ViewController: NSViewController, MKMapViewDelegate  {
             v.animatesDrop = true
         }
     }
-
+    
 }
 
