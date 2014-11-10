@@ -21,26 +21,6 @@ class TouchPoint: NSObject, MKAnnotation {
     }
 }
 
-class Step: NSObject, MKAnnotation {
-    let coordinate: CLLocationCoordinate2D
-    var title: String
-    init (step: MKRouteStep){
-        self.coordinate = step.polyline.coordinate
-        self.title = step.instructions
-    }
-}
-
-class Route: NSObject {
-    var polyline: MKPolyline
-    var steps: [MKRouteStep]
-    var distance: CLLocationDistance
-    init(polyline: MKPolyline, steps: [MKRouteStep], distance: CLLocationDistance) {
-        self.polyline = polyline
-        self.steps = steps
-        self.distance = distance
-    }
-}
-
 func all<T>(array: [T?]) -> Bool {
     for element in array {
         if element==nil {
@@ -61,7 +41,7 @@ class ViewController: NSViewController, MKMapViewDelegate  {
     var routes: [MKRoute?] = [nil, nil, nil] {
         didSet {
             if all(routes) {
-                self.route = routeFromRoutes(routes as [MKRoute?])
+                self.route = Route(routes: routes)
                 self.mapView.addOverlay(self.route!.polyline)
                 for step in self.route!.steps {
                     self.mapView.addOverlay(step.polyline)
@@ -71,30 +51,6 @@ class ViewController: NSViewController, MKMapViewDelegate  {
                 }) as [Step])
             }
         }
-    }
-    
-    func routeFromRoutes(routes: [MKRoute?]) -> Route {
-        
-        var newPoints: [MKMapPoint] = []
-        var steps: [MKRouteStep] = Array()
-        var distance: CLLocationDistance = 0
-        for route in (routes as [MKRoute!]) {
-            // Coordinates
-            let points = route.polyline.points()
-            for i in 0..<route.polyline.pointCount {
-                newPoints.append(points[i])
-            }
-            
-            // Steps
-            steps = steps + (route.steps as [MKRouteStep])
-            
-            // Distance
-            distance += route.distance
-        }
-        
-        let polyline = MKPolyline(points: &newPoints, count: newPoints.count)
-        
-        return Route(polyline: polyline, steps: steps, distance: distance)
     }
     
     override func viewDidLoad() {
@@ -189,10 +145,12 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         if let step = annotation as? Step {
             let pin = MKPinAnnotationView(annotation: step, reuseIdentifier: "step")
             pin.pinColor = MKPinAnnotationColor.Green
+            pin.canShowCallout = true
             v = pin
         } else {
             let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "wayPoint")
             pin.pinColor = MKPinAnnotationColor.Red
+            pin.canShowCallout = true
             v = pin
         }
         
