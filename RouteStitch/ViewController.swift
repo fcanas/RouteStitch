@@ -30,11 +30,25 @@ func all<T>(array: [T?]) -> Bool {
     return true
 }
 
-class ViewController: NSViewController, MKMapViewDelegate  {
+class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegate, ObjectSelector  {
+    
+    var selectedObject: AnyObject?
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet var routeTableAdapter: RouteTableAdapter! {
+        didSet {
+            routeTableAdapter.delegate = self
+        }
+    }
+    
     var touchPoints: [TouchPoint] = Array()
+    
+    var steps: [Step]? {
+        didSet {
+            routeTableAdapter.steps = steps
+        }
+    }
     
     var route: Route?
     
@@ -46,9 +60,10 @@ class ViewController: NSViewController, MKMapViewDelegate  {
                 for step in self.route!.steps {
                     self.mapView.addOverlay(step.polyline)
                 }
-                mapView.addAnnotations(self.route!.steps.map({ (step: MKRouteStep) -> Step in
+                steps = self.route!.steps.map({ (step: MKRouteStep) -> Step in
                     return Step(step: step)
-                }) as [Step])
+                }) as [Step]
+                mapView.addAnnotations(steps)
             }
         }
     }
@@ -66,6 +81,13 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         didSet {
             // Update the view, if already loaded.
         }
+    }
+    
+    @IBAction func clearRoute(sender: NSButton) {
+        mapView.removeAnnotations(mapView.annotations)
+        mapView.removeOverlays(mapView.overlays)
+        touchPoints.removeAll(keepCapacity: true)
+        routes = [nil, nil, nil]
     }
     
     @IBAction func didPressOnMap(sender: NSPressGestureRecognizer) {
@@ -155,6 +177,19 @@ class ViewController: NSViewController, MKMapViewDelegate  {
         }
         
         return v
+    }
+    
+    func objectSelectorDidSelectObject(objectSelector: ObjectSelector, object: AnyObject?) {
+        let step = object as? Step
+        mapView.selectAnnotation(step, animated: true)
+    }
+    
+    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
+        routeTableAdapter.selectedObject = view.annotation
+    }
+    
+    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
+        routeTableAdapter.selectedObject = nil
     }
 }
 
