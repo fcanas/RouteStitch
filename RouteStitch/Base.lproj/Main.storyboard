@@ -673,7 +673,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="944" height="558"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <mapView mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="rY5-gH-9FC">
+                            <mapView mapType="standard" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rY5-gH-9FC">
                                 <rect key="frame" x="0.0" y="0.0" width="944" height="558"/>
                                 <gestureRecognizers>
                                     <pressGestureRecognizer delaysPrimaryMouseButtonEvents="YES" id="opg-Yn-ouo">
