@@ -8,6 +8,12 @@
 
 import MapKit
 
+func joinRouteSteps(steps: [MKRouteStep]) -> [MKRouteStep] {
+    return steps.map {(step: MKRouteStep) -> MKRouteStep in
+        return Step(instructions: step.instructions, polyline: step.polyline, distance: step.distance)
+    }
+}
+
 class Route: NSObject {
     var polyline: MKPolyline
     var steps: [MKRouteStep]
@@ -25,7 +31,18 @@ class Route: NSObject {
             }
             
             // Steps
-            steps = steps + (route.steps as [MKRouteStep])
+            var routeSteps = route.steps as [MKRouteStep]
+            
+            let firstStep = routeSteps.first
+            let lastPriorStep = steps.last
+            
+            if firstStep != nil && lastPriorStep != nil {
+                routeSteps.removeAtIndex(0)
+                steps.removeLast()
+                steps = steps + joinRouteSteps([lastPriorStep!, firstStep!])
+            }
+            
+            steps = steps + (routeSteps as [MKRouteStep])
             
             // Distance
             distance += route.distance
