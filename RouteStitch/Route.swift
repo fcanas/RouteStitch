@@ -6,10 +6,7 @@
 //  Copyright (c) 2014 Fabian Canas. All rights reserved.
 //
 
-import Cocoa
 import MapKit
-
-
 
 class Route: NSObject {
     var polyline: MKPolyline
