@@ -57,13 +57,14 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
             if all(routes) {
                 self.route = Route(routes: routes)
                 self.mapView.addOverlay(self.route!.polyline)
-                for step in self.route!.steps {
-                    self.mapView.addOverlay(step.polyline)
+                
+                steps = self.route!.steps as? [Step]
+                for step in steps! {
+                    if step.shouldShow {
+                        self.mapView.addOverlay(step.polyline)
+                        self.mapView.addAnnotation(step as Step)
+                    }
                 }
-                steps = self.route!.steps.map({ (step: MKRouteStep) -> Step in
-                    return Step(step: step)
-                }) as [Step]
-                mapView.addAnnotations(steps)
             }
         }
     }
@@ -71,8 +72,8 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let providenceCoord = CLLocationCoordinate2DMake(41.82526, -71.41117)
-        let smallSpan = MKCoordinateSpanMake(0.003, 0.003)
+        let providenceCoord = CLLocationCoordinate2DMake(41.7189, -71.30379)
+        let smallSpan = MKCoordinateSpanMake(0.018, 0.018)
         let providenceRegion = MKCoordinateRegionMake(providenceCoord, smallSpan)
         mapView.region = providenceRegion
     }
@@ -136,14 +137,12 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         let render = MKPolylineRenderer(polyline: overlay as MKPolyline?)
         
         if polyline == self.route!.polyline {
-            render.lineWidth = 12
-            render.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.2)
+            render.lineWidth = 20
+            render.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.1)
         } else {
             render.lineWidth = 5
-            render.strokeColor = NSColor.orangeColor().colorWithAlphaComponent(0.6)
+            render.strokeColor = NSColor.purpleColor().colorWithAlphaComponent(0.8)
         }
-        
-        
         
         return render
     }
@@ -165,12 +164,14 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         }
         
         if let step = annotation as? Step {
-            let pin = MKPinAnnotationView(annotation: step, reuseIdentifier: "step")
-            pin.pinColor = MKPinAnnotationColor.Green
-            pin.canShowCallout = true
-            v = pin
-        } else {
-            let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "wayPoint")
+            if step.shouldShow {
+                let pin = MKPinAnnotationView(annotation: step, reuseIdentifier: "step")
+                pin.pinColor = MKPinAnnotationColor.Green
+                pin.canShowCallout = true
+                v = pin
+            }
+        } else if let a = annotation as? TouchPoint {
+            let pin = MKPinAnnotationView(annotation: a, reuseIdentifier: "wayPoint")
             pin.pinColor = MKPinAnnotationColor.Red
             pin.canShowCallout = true
             v = pin
@@ -185,7 +186,9 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     }
     
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-        routeTableAdapter.selectedObject = view.annotation
+        if let step = view.annotation as? Step {
+            routeTableAdapter.selectedObject = view.annotation
+        }
     }
     
     func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {

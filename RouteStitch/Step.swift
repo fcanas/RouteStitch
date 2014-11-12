@@ -21,6 +21,8 @@ class Step: MKRouteStep, MKAnnotation {
         }
     }
     
+    var shouldShow: Bool = true
+    
     private let inst: String
     private let poly: MKPolyline
     private let dist: CLLocationDistance

@@ -44,6 +44,10 @@ class Route: NSObject {
             
             steps = steps + (routeSteps as [MKRouteStep])
             
+            steps = steps.map { (s: MKRouteStep) -> Step in
+                return s as? Step ?? Step(step: s)
+            }
+            
             // Distance
             distance += route.distance
         }
