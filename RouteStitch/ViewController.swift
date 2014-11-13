@@ -61,7 +61,6 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
                 steps = self.route!.steps as? [Step]
                 for step in steps! {
                     if step.shouldShow {
-                        self.mapView.addOverlay(step.polyline)
                         self.mapView.addAnnotation(step as Step)
                     }
                 }
