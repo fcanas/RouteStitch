@@ -61,17 +61,27 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
                 steps = self.route!.steps as? [Step]
                 for step in steps! {
                     if step.shouldShow {
+//                        self.mapView.addOverlay(step.polyline)
                         self.mapView.addAnnotation(step as Step)
+                        self.mapView.addOverlay(MKCircle(centerCoordinate: step.coordinate, radius: 40))
                     }
                 }
             }
         }
     }
     
+    @IBAction func buildRouteWithDoubleBackAndShortSpur(sender: NSObject) {
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8305462382704, -71.3875419078424)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.844642838934, -71.3909476419578)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8395680157796, -71.4060275204943)))
+        buildRouteOnMap()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let providenceCoord = CLLocationCoordinate2DMake(41.7189, -71.30379)
+        let barringtonCoord = CLLocationCoordinate2DMake(41.7189, -71.30379)
+        let providenceCoord = CLLocationCoordinate2DMake(41.8305, -71.38754)
         let smallSpan = MKCoordinateSpanMake(0.018, 0.018)
         let providenceRegion = MKCoordinateRegionMake(providenceCoord, smallSpan)
         mapView.region = providenceRegion
@@ -131,16 +141,29 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     }
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
-        let polyline = overlay as MKPolyline
+        let polyline = overlay as? MKPolyline
         
-        let render = MKPolylineRenderer(polyline: overlay as MKPolyline?)
+        let render: MKOverlayRenderer = {
+            if polyline != nil {
+                return MKPolylineRenderer(polyline: polyline)
+            }
+            if let circle = overlay as? MKCircle {
+                return MKCircleRenderer(circle: circle)
+            }
+            return MKOverlayRenderer()
+            }()
         
-        if polyline == self.route!.polyline {
-            render.lineWidth = 20
-            render.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.1)
-        } else {
-            render.lineWidth = 5
-            render.strokeColor = NSColor.purpleColor().colorWithAlphaComponent(0.8)
+        if let r = render as? MKPolylineRenderer {
+            if polyline == self.route!.polyline {
+                r.lineWidth = 20
+                r.strokeColor = NSColor.magentaColor().colorWithAlphaComponent(0.1)
+            } else {
+                r.lineWidth = 5
+                r.strokeColor = NSColor.purpleColor().colorWithAlphaComponent(0.8)
+            }
+        } else if let r = render as? MKCircleRenderer {
+            r.lineWidth = 0.5
+            r.strokeColor = NSColor.blueColor()
         }
         
         return render

@@ -40,10 +40,10 @@ func joinRouteSteps(steps: [MKRouteStep]) -> [MKRouteStep] {
     // Are they overlapping?
     
     // Short? -  Trimming needs to be done recursively because back-tracking may span many maneuvers.
-    /*
-    if MKMetersBetweenMapPoints(firstMatchedPoint!, lastMatchedPoint!) < 50 {
-        return []
-    }*/
+    
+//    if MKMetersBetweenMapPoints(firstMatchedPoint!, lastMatchedPoint!) < 50 {
+//        return []
+//    }
     // Long?
     
     NSLog("cutting : \(steps[0].instructions) :: \(steps[1].instructions)")
