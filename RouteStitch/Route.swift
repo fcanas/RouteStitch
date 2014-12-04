@@ -8,9 +8,9 @@
 
 import MapKit
 
-func joinRouteSteps(steps: [MKRouteStep]) -> [MKRouteStep] {
-    let pl1 = steps[0].polyline
-    let pl2 = steps[2].polyline
+func matchedPointsForSteps(firstStep: MKRouteStep, secondStep: MKRouteStep) -> Int {
+    let pl1 = firstStep.polyline
+    let pl2 = secondStep.polyline
     
     let points1 = pl1.points()
     let points2 = pl2.points()
@@ -30,34 +30,120 @@ func joinRouteSteps(steps: [MKRouteStep]) -> [MKRouteStep] {
             lastMatchedPoint = p1
         }
     }
+    return numberOfMatchedPoints
+}
 
-    // Do the steps match end-to-end and not overlap?
+func vectorAtPolylineTail(polyline: MKPolyline) -> CGVector {
+    let points = polyline.points()
+    let p0 = points[polyline.pointCount - 1]
+    let p1 = points[polyline.pointCount - 2]
+    
+    let dx = p1.x - p0.x
+    let dy = p1.y - p0.y
+    
+    return CGVectorMake( CGFloat(dx), CGFloat(dy) )
+}
+
+func vectorAtPolylineHead(polyline: MKPolyline) -> CGVector {
+    let points = polyline.points()
+    let p0 = points[0]
+    let p1 = points[1]
+    
+    let dx = p1.x - p0.x
+    let dy = p1.y - p0.y
+    
+    return CGVectorMake( CGFloat(dx), CGFloat(dy) )
+}
+
+func normalize(v: CGVector) -> CGVector {
+    let m = magnitude(v)
+    return CGVector(dx: v.dx/m, dy: v.dy/m)
+}
+
+func magnitude(v: CGVector) -> CGFloat {
+    return sqrt(v.dx * v.dx + v.dy * v.dy)
+}
+
+func - (lhs: CGVector , rhs: CGVector) -> CGVector {
+    return CGVector(dx:lhs.dx-rhs.dx, dy:lhs.dy-rhs.dy)
+}
+
+func polylinesOverlapOnEnds(p1: MKPolyline, p2: MKPolyline) -> Bool {
+    let difference = normalize(vectorAtPolylineTail(p1)) - normalize(vectorAtPolylineHead(p2))
+    return magnitude(difference) < 0.1
+}
+
+func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
+    
+    let numberOfMatchedPoints = matchedPointsForSteps(steps[0], steps[2])
+
+    // Do the steps match end-to-end
     if numberOfMatchedPoints == 1 {
-        return [steps[2]]
+        NSLog("cutting with single-point match : \(steps[0].instructions) :: \(steps[1].instructions)")
+        let silentStep = Step(step: steps[0])
+        
+        if polylinesOverlapOnEnds(steps[0].polyline, steps[1].polyline) {
+            silentStep.setInstructions("Turn around")
+        } else {
+            silentStep.setInstructions("")
+        }
+        
+        // and not overlap?
+        return [silentStep, steps[2]]
         // TODO - if they are not colinear, we need to generate a maneuver.
+    } else if numberOfMatchedPoints > 1 {
+        // Are they overlapping?
+        // Short? -  Trimming needs to be done recursively because back-tracking may span many maneuvers.
+//        if MKMetersBetweenMapPoints(firstMatchedPoint!, lastMatchedPoint!) < 50 {
+//            return []
+//        }
+        NSLog("cutting : \(steps[0].instructions) :: \(steps[1].instructions)")
+        return [Step(instructions: "Turn around", polyline: steps.first!.polyline, distance: steps.first!.distance), steps[2]]
     }
     
-    // Are they overlapping?
+    NSLog("cutting : everything... : \(steps)")
+    return []
+}
+
+func filterRouteSteps(steps: [Step]) -> [Step] {
+    var newSteps: [Step] = Array();
+    NSLog("Filtering steps: \(steps.count)")
+    for var idx = 0; idx < steps.count; idx++ {
+        let step = steps[idx]
+        let stepCoordinate = step.coordinate
+        if (idx + 1) < steps.count {
+            let nextStep = steps[idx + 1]
+            let nextCoordinate = nextStep.coordinate
+            let distance = locationFromCoordinate(stepCoordinate).distanceFromLocation(locationFromCoordinate(nextCoordinate))
+            
+            if (matchedPointsForSteps(step, nextStep) > 1) && distance < 80 {
+                NSLog("spur? : \(step.instructions) -- \(nextStep.instructions)")
+            }
+            
+            if distance < 25 { // quick succession of instructions
+                step.setInstructions(step.instructions + ", then " + nextStep.instructions)
+            }
+        }
+        newSteps.append(step)
+    }
     
-    // Short? -  Trimming needs to be done recursively because back-tracking may span many maneuvers.
-    
-//    if MKMetersBetweenMapPoints(firstMatchedPoint!, lastMatchedPoint!) < 50 {
-//        return []
-//    }
-    // Long?
-    
-    NSLog("cutting : \(steps[0].instructions) :: \(steps[1].instructions)")
-    return [Step(instructions: "Turn around", polyline: steps.first!.polyline, distance: steps.first!.distance), steps[2]]
+    return newSteps
+}
+
+func locationFromCoordinate(coordinate: CLLocationCoordinate2D) -> CLLocation {
+    return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
 }
 
 class Route: NSObject {
     var polyline: MKPolyline
     var steps: [MKRouteStep]
+    private var steps_: [Step]
     var distance: CLLocationDistance
 
     init(routes: [MKRoute?]) {
         var newPoints: [MKMapPoint] = []
         steps = Array()
+        steps_ = Array()
         distance = 0
         for route in (routes as [MKRoute!]) {
             // Coordinates
@@ -75,19 +161,18 @@ class Route: NSObject {
             if lastPriorStep != nil {
                 routeSteps.removeRange(0...1)
                 steps.removeLast()
-                steps = steps + joinRouteSteps([lastPriorStep!] + firstSteps )
+                steps = steps + joinRouteEnds([lastPriorStep!] + firstSteps )
             }
             
             steps = steps + (routeSteps as [MKRouteStep])
-            
-            steps = steps.map { (s: MKRouteStep) -> Step in
+            steps_ = steps.map { (s: MKRouteStep) -> Step in
                 return s as? Step ?? Step(step: s)
             }
-            
             // Distance
             distance += route.distance
         }
-        
+        steps_ = filterRouteSteps(steps_)
+        steps = steps_
         polyline = MKPolyline(points: &newPoints, count: newPoints.count)
     }
 }

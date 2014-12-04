@@ -23,9 +23,13 @@ class Step: MKRouteStep, MKAnnotation {
     
     var shouldShow: Bool = true
     
-    private let inst: String
+    private var inst: String
     private let poly: MKPolyline
     private let dist: CLLocationDistance
+    
+    func setInstructions(instructions: String) {
+        inst = instructions
+    }
     
     override var instructions: String {
         return self.inst
