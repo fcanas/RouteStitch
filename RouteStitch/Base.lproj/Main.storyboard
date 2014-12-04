@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
-        <plugIn identifier="com.apple.MapKitIBPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="6254"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -666,9 +666,15 @@
                                         <action selector="buildRouteWithDoubleBackAndShortSpur:" target="Oky-zY-oP4" id="uq6-Nq-EPv"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="5E2F7D7E-97BA-4446-AAD7-4A8C2BDFF415" label="LongJointSpur" paletteLabel="LongJointSpur" tag="-1" image="longSpur" id="T8J-mt-ByR">
+                                    <connections>
+                                        <action selector="buildRouteWithLongSpurOnJoint:" target="Oky-zY-oP4" id="Dmh-y0-9n3"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ssT-O4-MDQ"/>
+                                <toolbarItem reference="T8J-mt-ByR"/>
                                 <toolbarItem reference="hcp-ph-9xO"/>
                             </defaultToolbarItems>
                         </toolbar>
@@ -820,5 +826,6 @@
     </scenes>
     <resources>
         <image name="doubleBack" width="64" height="64"/>
+        <image name="longSpur" width="64" height="64"/>
     </resources>
 </document>

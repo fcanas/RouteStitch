@@ -71,9 +71,22 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     }
     
     @IBAction func buildRouteWithDoubleBackAndShortSpur(sender: NSObject) {
+        clearMap()
+        
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8305462382704, -71.3875419078424)))
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.844642838934, -71.3909476419578)))
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8395680157796, -71.4060275204943)))
+        buildRouteOnMap()
+    }
+    
+    @IBAction func buildRouteWithLongSpurOnJoint(sender: NSObject) {
+        clearMap()
+        
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8457066816856, -71.3884443523298)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.83964799546, -71.3857071767058)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668)))
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668), animated: true)
         buildRouteOnMap()
     }
     
@@ -94,6 +107,10 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     }
     
     @IBAction func clearRoute(sender: NSButton) {
+        clearMap()
+    }
+    
+    func clearMap() {
         mapView.removeAnnotations(mapView.annotations)
         mapView.removeOverlays(mapView.overlays)
         touchPoints.removeAll(keepCapacity: true)
