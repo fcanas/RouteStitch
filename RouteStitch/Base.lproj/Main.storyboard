@@ -671,9 +671,15 @@
                                         <action selector="buildRouteWithLongSpurOnJoint:" target="Oky-zY-oP4" id="Dmh-y0-9n3"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="B42BDAE5-E6AC-4E85-83FA-1AA45F196BA3" label="ShortSpur" paletteLabel="ShortSpur" tag="-1" image="spur" id="OMW-oy-vnX">
+                                    <connections>
+                                        <action selector="buildRouteWithUselessShortSpur:" target="Oky-zY-oP4" id="No7-S1-f4r"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ssT-O4-MDQ"/>
+                                <toolbarItem reference="OMW-oy-vnX"/>
                                 <toolbarItem reference="T8J-mt-ByR"/>
                                 <toolbarItem reference="hcp-ph-9xO"/>
                             </defaultToolbarItems>
@@ -827,5 +833,6 @@
     <resources>
         <image name="doubleBack" width="64" height="64"/>
         <image name="longSpur" width="64" height="64"/>
+        <image name="spur" width="64" height="64"/>
     </resources>
 </document>

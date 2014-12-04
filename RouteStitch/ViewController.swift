@@ -76,6 +76,8 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8305462382704, -71.3875419078424)))
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.844642838934, -71.3909476419578)))
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8395680157796, -71.4060275204943)))
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.84, -71.402), animated: true)
         buildRouteOnMap()
     }
     
@@ -87,6 +89,17 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668)))
         
         mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668), animated: true)
+        buildRouteOnMap()
+    }
+    
+    @IBAction func buildRouteWithUselessShortSpur(sender: NSObject) {
+        clearMap()
+        
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8246217997671, -71.3902055559176)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.826535400251, -71.3907437219654)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8294102008302, -71.390917905388)))
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.826535400251, -71.3907437219654), animated: true)
         buildRouteOnMap()
     }
     
