@@ -15,6 +15,8 @@ class Step: MKRouteStep, MKAnnotation {
         }
     }
     
+    var detectionRadius :CLLocationDistance = 40
+    
     var title: String {
         get {
             return self.instructions

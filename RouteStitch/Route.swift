@@ -88,16 +88,10 @@ func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
             silentStep.setInstructions("")
         }
         
-        // and not overlap?
         return [silentStep, steps[2]]
         // TODO - if they are not colinear, we need to generate a maneuver.
     } else if numberOfMatchedPoints > 1 {
         // Are they overlapping?
-        // Short? -  Trimming needs to be done recursively because back-tracking may span many maneuvers.
-//        if MKMetersBetweenMapPoints(firstMatchedPoint!, lastMatchedPoint!) < 50 {
-//            return []
-//        }
-        NSLog("cutting : \(steps[0].instructions) :: \(steps[1].instructions)")
         return [Step(instructions: "Turn around", polyline: steps.first!.polyline, distance: steps.first!.distance), steps[2]]
     }
     
@@ -122,11 +116,11 @@ func filterRouteSteps(steps: [Step]) -> [Step] {
             
             if distance < 25 { // quick succession of instructions
                 step.setInstructions(step.instructions + ", then " + nextStep.instructions)
+                nextStep.detectionRadius = 20
             }
         }
         newSteps.append(step)
     }
-    
     return newSteps
 }
 

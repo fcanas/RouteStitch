@@ -63,7 +63,7 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
                     if step.shouldShow {
 //                        self.mapView.addOverlay(step.polyline)
                         self.mapView.addAnnotation(step as Step)
-                        self.mapView.addOverlay(MKCircle(centerCoordinate: step.coordinate, radius: 40))
+                        self.mapView.addOverlay(MKCircle(centerCoordinate: step.coordinate, radius: step.detectionRadius))
                     }
                 }
             }
