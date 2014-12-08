@@ -84,6 +84,7 @@ func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
         
         if polylinesOverlapOnEnds(steps[0].polyline, steps[1].polyline) {
             silentStep.setInstructions("Turn around")
+            silentStep.isSpur = true
         } else {
             silentStep.setInstructions("")
         }
@@ -92,7 +93,9 @@ func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
         // TODO - if they are not colinear, we need to generate a maneuver.
     } else if numberOfMatchedPoints > 1 {
         // Are they overlapping?
-        return [Step(instructions: "Turn around", polyline: steps.first!.polyline, distance: steps.first!.distance), steps[2]]
+        let step = Step(instructions: "Turn around", polyline: steps.first!.polyline, distance: steps.first!.distance)
+        step.isSpur = true
+        return [step, steps[2]]
     }
     
     NSLog("cutting : everything... : \(steps)")

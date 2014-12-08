@@ -16,7 +16,7 @@ class Step: MKRouteStep, MKAnnotation {
     }
     
     var detectionRadius :CLLocationDistance = 40
-    
+    var isSpur :Bool = false
     var title: String {
         get {
             return self.instructions

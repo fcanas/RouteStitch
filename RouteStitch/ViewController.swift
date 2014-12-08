@@ -218,7 +218,7 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         if let step = annotation as? Step {
             if step.shouldShow {
                 let pin = MKPinAnnotationView(annotation: step, reuseIdentifier: "step")
-                pin.pinColor = MKPinAnnotationColor.Green
+                pin.pinColor = step.isSpur ? MKPinAnnotationColor.Purple : MKPinAnnotationColor.Green
                 pin.canShowCallout = true
                 v = pin
             }
