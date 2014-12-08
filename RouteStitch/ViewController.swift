@@ -92,6 +92,17 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         buildRouteOnMap()
     }
     
+    @IBAction func buildRouteWithShortKeeperSpur(sender: NSObject) {
+        clearMap()
+        
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8457066816856, -71.3884443523298)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8414177909792, -71.3861908626278)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668)))
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.8434862962953, -71.3890069707668), animated: true)
+        buildRouteOnMap()
+    }
+    
     @IBAction func buildRouteWithUselessShortSpur(sender: NSObject) {
         clearMap()
         

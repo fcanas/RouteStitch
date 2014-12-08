@@ -676,9 +676,15 @@
                                         <action selector="buildRouteWithUselessShortSpur:" target="Oky-zY-oP4" id="No7-S1-f4r"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="AD77227E-6EB9-4380-8970-5CB92D5948D3" label="ShortKeeper" paletteLabel="ShortKeeper" tag="-1" image="shortKeeper" id="ZG5-di-9Z0">
+                                    <connections>
+                                        <action selector="buildRouteWithShortKeeperSpur:" target="Oky-zY-oP4" id="x7s-CA-aOw"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ssT-O4-MDQ"/>
+                                <toolbarItem reference="ZG5-di-9Z0"/>
                                 <toolbarItem reference="OMW-oy-vnX"/>
                                 <toolbarItem reference="T8J-mt-ByR"/>
                                 <toolbarItem reference="hcp-ph-9xO"/>
@@ -833,6 +839,7 @@
     <resources>
         <image name="doubleBack" width="64" height="64"/>
         <image name="longSpur" width="64" height="64"/>
+        <image name="shortKeeper" width="64" height="64"/>
         <image name="spur" width="64" height="64"/>
     </resources>
 </document>
