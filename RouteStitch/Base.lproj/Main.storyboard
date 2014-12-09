@@ -686,10 +686,16 @@
                                         <action selector="buildRouteWithAngledShortSpur:" target="Oky-zY-oP4" id="A7h-My-Pcy"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="431A53A1-D357-4CCC-99A0-B1925AFCFE7E" label="DoubleSpur" paletteLabel="DoubleSpur" tag="-1" image="doubleSpur" id="Uc5-yp-mLy">
+                                    <connections>
+                                        <action selector="buildRouteWithDoubleSpur:" target="Oky-zY-oP4" id="GPD-db-aa5"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
-                                <toolbarItem reference="ssT-O4-MDQ"/>
+                                <toolbarItem reference="Uc5-yp-mLy"/>
                                 <toolbarItem reference="fss-g7-DxT"/>
+                                <toolbarItem reference="ssT-O4-MDQ"/>
                                 <toolbarItem reference="ZG5-di-9Z0"/>
                                 <toolbarItem reference="OMW-oy-vnX"/>
                                 <toolbarItem reference="T8J-mt-ByR"/>
@@ -845,6 +851,7 @@
     <resources>
         <image name="angledSpur" width="64" height="64"/>
         <image name="doubleBack" width="64" height="64"/>
+        <image name="doubleSpur" width="64" height="64"/>
         <image name="longSpur" width="64" height="64"/>
         <image name="shortKeeper" width="64" height="64"/>
         <image name="spur" width="64" height="64"/>

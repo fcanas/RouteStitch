@@ -429,6 +429,7 @@
 				E76E8EA21A113973008462EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E76E8EA31A113973008462EE /* Build configuration list for PBXNativeTarget "RouteStitchTests" */ = {
 			isa = XCConfigurationList;
@@ -437,6 +438,7 @@
 				E76E8EA51A113973008462EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
