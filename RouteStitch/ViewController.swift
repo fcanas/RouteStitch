@@ -114,6 +114,17 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         buildRouteOnMap()
     }
     
+    @IBAction func buildRouteWithAngledShortSpur(sender: NSObject) {
+        clearMap()
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8279337178942, -71.3925134771145)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8289400215631, -71.3882616745322)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.8281556659358, -71.3856697752341)))
+        91051961542
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.8287743618667, -71.3883284419824), animated: true)
+        buildRouteOnMap()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

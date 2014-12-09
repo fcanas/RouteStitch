@@ -681,9 +681,15 @@
                                         <action selector="buildRouteWithShortKeeperSpur:" target="Oky-zY-oP4" id="x7s-CA-aOw"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="73F13B39-E246-4715-AB51-E4F900935372" label="AngledSpur" paletteLabel="AngledSpur" tag="-1" image="angledSpur" id="fss-g7-DxT">
+                                    <connections>
+                                        <action selector="buildRouteWithAngledShortSpur:" target="Oky-zY-oP4" id="A7h-My-Pcy"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ssT-O4-MDQ"/>
+                                <toolbarItem reference="fss-g7-DxT"/>
                                 <toolbarItem reference="ZG5-di-9Z0"/>
                                 <toolbarItem reference="OMW-oy-vnX"/>
                                 <toolbarItem reference="T8J-mt-ByR"/>
@@ -837,6 +843,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="angledSpur" width="64" height="64"/>
         <image name="doubleBack" width="64" height="64"/>
         <image name="longSpur" width="64" height="64"/>
         <image name="shortKeeper" width="64" height="64"/>
