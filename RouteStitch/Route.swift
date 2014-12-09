@@ -124,6 +124,7 @@ func filterRouteSteps(steps: [Step]) -> [Step] {
                     continue
                 } else if polylinesOverlapOnEnds(previousStep.polyline, nextNextStep.polyline) {
                     previousStep.setInstructions("Turn around")// TODO : re-draw full route ribbon
+                    previousStep.isSpur = true
                     newSteps.removeLast()
                     newSteps.append(previousStep)
                     idx++
