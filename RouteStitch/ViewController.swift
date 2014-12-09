@@ -21,13 +21,15 @@ class TouchPoint: NSObject, MKAnnotation {
     }
 }
 
-func all<T>(array: [T?]) -> Bool {
+func all<T>(array: [T?]) -> [T]? {
+    var a :[T] = []
     for element in array {
         if element==nil {
-            return false
+            return nil
         }
+        a.append(element!)
     }
-    return true
+    return a
 }
 
 class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegate, ObjectSelector  {
@@ -54,8 +56,8 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     
     var routes: [MKRoute?] = [nil, nil, nil] {
         didSet {
-            if all(routes) {
-                self.route = Route(routes: routes)
+            if let r = all(routes) {
+                self.route = Route(routes: r)
                 self.mapView.addOverlay(self.route!.polyline)
                 
                 steps = self.route!.steps as? [Step]

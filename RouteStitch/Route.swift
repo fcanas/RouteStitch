@@ -145,45 +145,66 @@ func locationFromCoordinate(coordinate: CLLocationCoordinate2D) -> CLLocation {
     return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
 }
 
+
+func join(polylines: [MKPolyline]) -> MKPolyline {
+    var accumulatedPoints: [MKMapPoint] = []
+    for polyline in polylines {
+        let points = polyline.points()
+        for i in 0..<polyline.pointCount {
+            accumulatedPoints.append(points[i])
+        }
+    }
+    return MKPolyline(points: &accumulatedPoints, count: accumulatedPoints.count)
+}
+
+func join(routes: [MKRoute]) -> Route {
+    var steps :[MKRouteStep] = []
+    var steps_ :[Step] = []
+    var distance :CLLocationDistance = 0
+    for route in routes {
+        // Steps
+        var routeSteps = route.steps as [MKRouteStep]
+        
+        let firstSteps = [routeSteps[0], routeSteps[1] ]
+        let lastPriorStep = steps.last
+        
+        if lastPriorStep != nil {
+            routeSteps.removeRange(0...1)
+            steps.removeLast()
+            steps = steps + joinRouteEnds([lastPriorStep!] + firstSteps )
+        }
+        
+        steps = steps + (routeSteps as [MKRouteStep])
+        steps_ = steps.map { (s: MKRouteStep) -> Step in
+            return s as? Step ?? Step(step: s)
+        }
+        // Distance
+        distance += route.distance
+    }
+    steps_ = filterRouteSteps(steps_)
+    steps = steps_
+    
+    let polyline = join(steps_.map({ (step:Step) -> MKPolyline in
+        step.polyline
+    }))
+    
+    return Route(polyline: polyline, steps: steps, distance: distance)
+}
+
 class Route: NSObject {
     var polyline: MKPolyline
     var steps: [MKRouteStep]
-    private var steps_: [Step]
     var distance: CLLocationDistance
     
-    init(routes: [MKRoute?]) {
-        var newPoints: [MKMapPoint] = []
-        steps = Array()
-        steps_ = Array()
-        distance = 0
-        for route in (routes as [MKRoute!]) {
-            // Coordinates
-            let points = route.polyline.points()
-            for i in 0..<route.polyline.pointCount {
-                newPoints.append(points[i])
-            }
-            
-            // Steps
-            var routeSteps = route.steps as [MKRouteStep]
-            
-            let firstSteps = [routeSteps[0], routeSteps[1] ]
-            let lastPriorStep = steps.last
-            
-            if lastPriorStep != nil {
-                routeSteps.removeRange(0...1)
-                steps.removeLast()
-                steps = steps + joinRouteEnds([lastPriorStep!] + firstSteps )
-            }
-            
-            steps = steps + (routeSteps as [MKRouteStep])
-            steps_ = steps.map { (s: MKRouteStep) -> Step in
-                return s as? Step ?? Step(step: s)
-            }
-            // Distance
-            distance += route.distance
-        }
-        steps_ = filterRouteSteps(steps_)
-        steps = steps_
-        polyline = MKPolyline(points: &newPoints, count: newPoints.count)
+    init(polyline: MKPolyline, steps:[MKRouteStep], distance: CLLocationDistance) {
+        self.polyline = polyline
+        self.steps = steps
+        self.distance = distance
+        super.init()
+    }
+    
+    convenience init(routes: [MKRoute]) {
+        let r = join(routes)
+        self.init(polyline: r.polyline, steps: r.steps, distance: r.distance)
     }
 }
