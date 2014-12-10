@@ -210,7 +210,7 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         
         let render: MKOverlayRenderer = {
             if polyline != nil {
-                return MKPolylineRenderer(polyline: polyline)
+                return RunRenderer(polyline: polyline!)
             }
             if let circle = overlay as? MKCircle {
                 return MKCircleRenderer(circle: circle)

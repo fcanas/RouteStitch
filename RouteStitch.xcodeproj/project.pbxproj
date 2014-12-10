@@ -16,6 +16,7 @@
 		E76E8EAA1A1170CC008462EE /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76E8EA91A1170CC008462EE /* Route.swift */; };
 		E76E8EAC1A1170F2008462EE /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76E8EAB1A1170F2008462EE /* Step.swift */; };
 		E76E8EAE1A129991008462EE /* RouteTableAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76E8EAD1A129991008462EE /* RouteTableAdapter.swift */; };
+		E7AD6C551A38CCFE000C5147 /* RunRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AD6C541A38CCFE000C5147 /* RunRenderer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		E76E8EA91A1170CC008462EE /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		E76E8EAB1A1170F2008462EE /* Step.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
 		E76E8EAD1A129991008462EE /* RouteTableAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteTableAdapter.swift; sourceTree = "<group>"; };
+		E7AD6C541A38CCFE000C5147 /* RunRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				E76E8EA91A1170CC008462EE /* Route.swift */,
 				E76E8EAB1A1170F2008462EE /* Step.swift */,
 				E76E8EAD1A129991008462EE /* RouteTableAdapter.swift */,
+				E7AD6C541A38CCFE000C5147 /* RunRenderer.swift */,
 			);
 			path = RouteStitch;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			files = (
 				E76E8EAA1A1170CC008462EE /* Route.swift in Sources */,
 				E76E8EAC1A1170F2008462EE /* Step.swift in Sources */,
+				E7AD6C551A38CCFE000C5147 /* RunRenderer.swift in Sources */,
 				E76E8EAE1A129991008462EE /* RouteTableAdapter.swift in Sources */,
 				E76E8E8C1A113973008462EE /* ViewController.swift in Sources */,
 				E76E8E8A1A113973008462EE /* AppDelegate.swift in Sources */,
