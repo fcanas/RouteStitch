@@ -74,7 +74,7 @@ func + (lhs: CGVector , rhs: CGVector) -> CGVector {
 
 func polylinesOverlapOnEnds(p1: MKPolyline, p2: MKPolyline) -> Bool {
     let difference = normalize(vectorAtPolylineTail(p1)) - normalize(vectorAtPolylineHead(p2))
-    return magnitude(difference) < 0.1
+    return magnitude(difference) < 0.05
 }
 
 func polylinesAreColinearNonOverlapping(p1: MKPolyline, p2: MKPolyline) -> Bool {
@@ -115,7 +115,7 @@ func filterRouteSteps(steps: [Step]) -> [Step] {
             let distance = locationFromCoordinate(stepCoordinate).distanceFromLocation(locationFromCoordinate(nextCoordinate))
             
             // Short Spur detection
-            if (idx > 1 && step.isSpur && distance < 60 && steps.count > (idx + 2)) {
+            if (idx > 1 && step.isSpur && distance < 90 && steps.count > (idx + 2)) {
                 let previousStep = steps[idx - 1]
                 let nextNextStep = steps[idx + 2]
                 if polylinesAreColinearNonOverlapping(previousStep.polyline, nextNextStep.polyline) {
