@@ -72,6 +72,17 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         }
     }
     
+    @IBAction func buildRouteWithGap(sender: NSObject) {
+        clearMap()
+        
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.780334789544, -72.5242067361986)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.782628179373, -72.5238435569808)))
+        touchPoints.append(TouchPoint(coordinate: CLLocationCoordinate2DMake(41.785988289537, -72.5201855391608)))
+        
+        mapView.setCenterCoordinate(CLLocationCoordinate2DMake(41.782628179373, -72.5238435569808), animated: true)
+        buildRouteOnMap()
+    }
+    
     @IBAction func buildRouteWithDoubleBackAndShortSpur(sender: NSObject) {
         clearMap()
         
