@@ -74,7 +74,7 @@ func + (lhs: CGVector , rhs: CGVector) -> CGVector {
 
 func polylinesOverlapOnEnds(p1: MKPolyline, p2: MKPolyline) -> Bool {
     let difference = normalize(vectorAtPolylineTail(p1)) - normalize(vectorAtPolylineHead(p2))
-    return magnitude(difference) < 0.05
+    return magnitude(difference) < 0.1
 }
 
 func polylinesAreColinearNonOverlapping(p1: MKPolyline, p2: MKPolyline) -> Bool {
@@ -83,25 +83,33 @@ func polylinesAreColinearNonOverlapping(p1: MKPolyline, p2: MKPolyline) -> Bool 
 }
 
 func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
-    
+    //    return steps
     let numberOfMatchedPoints = matchedPointsForSteps(steps[0], steps[2])
     
-    // Do the steps match end-to-end
+    // Typical case :
+    // steps[0] is "arrive at the destination"
+    // steps[1] is "continue to Sumit St"
+    // steps[2] is the next thing.
+    
+    var jointStep :Step
+    
+    // Do steps 0 and 2 match end-to-end?
     if numberOfMatchedPoints >= 1 {
-        let silentStep = Step(step: steps[0])
-        
-        if polylinesOverlapOnEnds(steps[0].polyline, steps[1].polyline) {
-            silentStep.setInstructions("Turn around")
-            silentStep.isSpur = true
-        } else {
-            silentStep.setInstructions("")
-        }
-        
-        return [silentStep, steps[2]]
-        // TODO - if they are not colinear, we need to generate a maneuver.
+        // Drop step 1
+        jointStep = Step(step: steps[0])
+    } else {
+        jointStep = Step(step: steps[1])
     }
-    NSLog("cutting : everything... : \(steps)")
-    return []
+    
+    if polylinesOverlapOnEnds(jointStep.polyline, steps[2].polyline) {
+        jointStep.setInstructions("Turn around")
+        jointStep.isSpur = true
+    } else if polylinesAreColinearNonOverlapping(jointStep.polyline, steps[2].polyline) {
+        jointStep.setInstructions("")
+    } // TODO - if they are not colinear, we need to generate a maneuver
+    // Compare jointStep vector to steps[2] vector, and generate a maneuver : e.g. "turn right".
+    
+    return [jointStep, steps[2]]
 }
 
 func filterRouteSteps(steps: [Step]) -> [Step] {
@@ -115,7 +123,7 @@ func filterRouteSteps(steps: [Step]) -> [Step] {
             let distance = locationFromCoordinate(stepCoordinate).distanceFromLocation(locationFromCoordinate(nextCoordinate))
             
             // Short Spur detection
-            if (idx > 1 && step.isSpur && distance < 90 && steps.count > (idx + 2)) {
+            if (idx > 1 && step.isSpur && distance < 60 && steps.count > (idx + 2)) {
                 let previousStep = steps[idx - 1]
                 let nextNextStep = steps[idx + 2]
                 if polylinesAreColinearNonOverlapping(previousStep.polyline, nextNextStep.polyline) {
@@ -160,7 +168,7 @@ func join(polylines: [MKPolyline]) -> MKPolyline {
 
 func join(routes: [MKRoute]) -> Route {
     var steps :[MKRouteStep] = []
-    var steps_ :[Step] = []
+    var steps_ :[Step] = []// the contents of step where each MKRouteStep has been mapped to a Step
     var distance :CLLocationDistance = 0
     for route in routes {
         // Steps
@@ -169,10 +177,10 @@ func join(routes: [MKRoute]) -> Route {
         let firstSteps = [routeSteps[0], routeSteps[1] ]
         let lastPriorStep = steps.last
         
-        if lastPriorStep != nil {
+        if let priorStep = lastPriorStep {
             routeSteps.removeRange(0...1)
             steps.removeLast()
-            steps = steps + joinRouteEnds([lastPriorStep!] + firstSteps )
+            steps = steps + joinRouteEnds([priorStep] + firstSteps )
         }
         
         steps = steps + (routeSteps as [MKRouteStep])
