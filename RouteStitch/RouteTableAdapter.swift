@@ -22,7 +22,7 @@ class RouteTableAdapter: NSObject, NSTableViewDataSource, NSTableViewDelegate, O
         didSet {
             var index: Int = NSNotFound
             if selectedObject != nil {
-                index = find(steps!, selectedObject as Step) ?? NSNotFound
+                index = find(steps!, selectedObject as! Step) ?? NSNotFound
             }
             if index == NSNotFound {
                 tableView.deselectAll(nil)
@@ -55,7 +55,7 @@ class RouteTableAdapter: NSObject, NSTableViewDataSource, NSTableViewDelegate, O
     
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        var result: NSTextField? = tableView.makeViewWithIdentifier("cellIdent", owner: self) as NSTextField?
+        var result: NSTextField? = tableView.makeViewWithIdentifier("cellIdent", owner: self) as! NSTextField?
         
         if result == nil {
             result = NSTextField(frame: NSRectFromCGRect(CGRectZero))

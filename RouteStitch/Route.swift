@@ -82,6 +82,20 @@ func polylinesAreColinearNonOverlapping(p1: MKPolyline, p2: MKPolyline) -> Bool 
     return magnitude(sum) < 0.1
 }
 
+typealias CGDegrees = CGFloat
+
+
+func degrees(rad: CGFloat) -> CGDegrees {
+    return rad / 2 / CGFloat(M_PI) * CGFloat(360)
+}
+
+func crossProduct(lhs: CGVector, rhs: CGVector) -> CGDegrees {
+    let numerator = (lhs.dx * rhs.dx) + (lhs.dy * rhs.dy)
+    let denominator = magnitude(lhs) * magnitude(rhs)
+    
+    return degrees(acos(numerator/denominator))
+}
+
 func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
     //    return steps
     let numberOfMatchedPoints = matchedPointsForSteps(steps[0], steps[2])
@@ -108,6 +122,12 @@ func joinRouteEnds(steps: [MKRouteStep]) -> [MKRouteStep] {
         jointStep.setInstructions("")
     } // TODO - if they are not colinear, we need to generate a maneuver
     // Compare jointStep vector to steps[2] vector, and generate a maneuver : e.g. "turn right".
+    
+    let angle = crossProduct(vectorAtPolylineTail(steps[0].polyline), vectorAtPolylineHead(steps[2].polyline))
+    
+    println("angle between polylines: \(angle)")
+    
+    jointStep.angle = angle
     
     return [jointStep, steps[2]]
 }
@@ -154,7 +174,6 @@ func locationFromCoordinate(coordinate: CLLocationCoordinate2D) -> CLLocation {
     return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate())
 }
 
-
 func join(polylines: [MKPolyline]) -> MKPolyline {
     var accumulatedPoints: [MKMapPoint] = []
     for polyline in polylines {
@@ -172,7 +191,7 @@ func join(routes: [MKRoute]) -> Route {
     var distance :CLLocationDistance = 0
     for route in routes {
         // Steps
-        var routeSteps = route.steps as [MKRouteStep]
+        var routeSteps = route.steps as! [MKRouteStep]
         
         let firstSteps = [routeSteps[0], routeSteps[1] ]
         let lastPriorStep = steps.last

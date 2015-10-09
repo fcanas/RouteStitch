@@ -15,11 +15,18 @@ class Step: MKRouteStep, MKAnnotation {
         }
     }
     
+    var angle :CGFloat = 1000
     var detectionRadius :CLLocationDistance = 40
     var isSpur :Bool = false
     var title: String {
         get {
-            return self.instructions
+            return self.instructions ?? "hi"
+        }
+    }
+    
+    var subtitle :String {
+        get {
+            return "\(self.angle)"
         }
     }
     

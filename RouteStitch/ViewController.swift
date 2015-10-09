@@ -58,7 +58,10 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         didSet {
             if let r = all(routes) {
                 self.route = Route(routes: r)
-                self.mapView.addOverlay(self.route!.polyline)
+                for route in r {
+                    self.mapView.addOverlay(route.polyline)
+                }
+//                self.mapView.addOverlay(self.route!.polyline)
                 
                 steps = self.route!.steps as? [Step]
                 for step in steps! {
@@ -211,7 +214,7 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
         request.setDestination(mapItemWithCoordinate(destinationCoordinate))
         
         MKDirections(request: request).calculateDirectionsWithCompletionHandler { (response: MKDirectionsResponse!, error: NSError!) -> Void in
-            let route = response.routes.first as MKRoute!
+            let route = response.routes.first as! MKRoute!
             completion(route)
         }
     }
@@ -250,7 +253,7 @@ class ViewController: NSViewController, MKMapViewDelegate, ObjectSelectorDelegat
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
-        for v: MKPinAnnotationView in views as [MKPinAnnotationView] {
+        for v: MKPinAnnotationView in views as! [MKPinAnnotationView] {
             v.animatesDrop = true
         }
     }
